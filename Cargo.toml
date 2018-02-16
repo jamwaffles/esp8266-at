@@ -6,3 +6,4 @@ keywords = ["rtfm", "esp8266", "wifi", "embedded", "embedded-hal-driver"]
 repository = "https://github.com/jamwaffles/esp8266-driver"
 
 [dependencies]
+embedded-hal = "0.1.2"
