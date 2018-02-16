@@ -1,0 +1,8 @@
+[package]
+name = "esp8266-driver"
+version = "0.1.0"
+authors = ["James Waples <jamwaffles@gmail.com>"]
+keywords = ["rtfm", "esp8266", "wifi", "embedded", "embedded-hal-driver"]
+repository = "https://github.com/jamwaffles/esp8266-driver"
+
+[dependencies]
