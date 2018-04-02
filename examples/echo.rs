@@ -10,34 +10,31 @@ extern crate cortex_m_rtfm as rtfm;
 extern crate esp8266_driver;
 extern crate stm32f103xx_hal as blue_pill;
 
-use blue_pill::dma::{CircBuffer, Event, dma1};
+// use blue_pill::dma::{CircBuffer, dma1};
 use blue_pill::prelude::*;
-use blue_pill::serial::Serial;
+use blue_pill::serial::{Event, Rx, Serial, Tx};
 use blue_pill::stm32f103xx;
-use cortex_m::asm;
+use blue_pill::stm32f103xx::USART3 as USART3_PERIPHERAL;
+// use cortex_m::asm;
 use rtfm::{app, Threshold};
 
 app! {
     device: stm32f103xx,
 
     resources: {
-        static BUFFER: [[u8; 8]; 2] = [[0; 8]; 2];
-        static CB: CircBuffer<[u8; 8], dma1::C3>;
-    },
-
-    init: {
-        resources: [BUFFER],
+        static TX: Tx<USART3_PERIPHERAL>;
+        static RX: Rx<USART3_PERIPHERAL>;
     },
 
     tasks: {
-        DMA1_CHANNEL3: {
-            path: rx,
-            resources: [CB],
+        USART3: {
+            path: echo,
+            resources: [TX, RX],
         },
     }
 }
 
-fn init(p: init::Peripherals, r: init::Resources) -> init::LateResources {
+fn init(p: init::Peripherals) -> init::LateResources {
     let mut flash = p.device.FLASH.constrain();
     let mut rcc = p.device.RCC.constrain();
 
@@ -64,7 +61,7 @@ fn init(p: init::Peripherals, r: init::Resources) -> init::LateResources {
     let tx = gpiob.pb10.into_alternate_push_pull(&mut gpiob.crh);
     let rx = gpiob.pb11;
 
-    let serial = Serial::usart3(
+    let mut serial = Serial::usart3(
         p.device.USART3,
         (tx, rx),
         &mut afio.mapr,
@@ -73,17 +70,10 @@ fn init(p: init::Peripherals, r: init::Resources) -> init::LateResources {
         &mut rcc.apb1,
     );
 
+    serial.listen(Event::Rxne);
     let (tx, rx) = serial.split();
 
-    let mut channels = p.device.DMA1.split(&mut rcc.ahb);
-    channels.3.listen(Event::HalfTransfer);
-    channels.3.listen(Event::TransferComplete);
-
-    let (_, c, tx) = tx.write_all(channels.2, b"AT\r\n").wait();
-
-    init::LateResources {
-        CB: rx.circ_read(channels.3, r.BUFFER),
-    }
+    init::LateResources { TX: tx, RX: rx }
 }
 
 fn idle() -> ! {
@@ -92,12 +82,7 @@ fn idle() -> ! {
     }
 }
 
-fn rx(_t: &mut Threshold, mut r: DMA1_CHANNEL3::Resources) {
-    r.CB
-        .peek(|_buf, _half| {
-            let foo = _buf;
-            let bar = _half;
-            asm::bkpt();
-        })
-        .unwrap();
+fn echo(_: &mut Threshold, mut r: USART3::Resources) {
+    let byte = r.RX.read().unwrap();
+    r.TX.write(byte).unwrap();
 }
