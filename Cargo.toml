@@ -1,9 +1,40 @@
 [package]
+categories = ["embedded", "no-std"]
 name = "esp8266-driver"
 version = "0.1.0"
 authors = ["James Waples <jamwaffles@gmail.com>"]
-keywords = ["rtfm", "esp8266", "wifi", "embedded", "embedded-hal-driver"]
+keywords = ["no-std", "rtfm", "esp8266", "wifi", "embedded", "embedded-hal-driver"]
 repository = "https://github.com/jamwaffles/esp8266-driver"
 
 [dependencies]
 embedded-hal = "0.1.2"
+nb = "0.1.1"
+cortex-m = "0.4.3"
+cortex-m-rtfm = "0.3.1"
+cortex-m-rtfm-macros = "0.3.0"
+
+[dev-dependencies.cortex-m-rt]
+features = ["abort-on-panic"]
+version = "0.3.12"
+
+
+# [dependencies.embedded-hal]
+# version = "0.1.2"
+# features = ["unproven"]
+
+# Must be installed from Git currently, not sure why it's not on crates.io
+# TODO: Replace this with a "normal" dependency in the future
+[dependencies.stm32f103xx-hal]
+git = "https://github.com/japaric/stm32f103xx-hal.git"
+features = ["rt"]
+version = "*"
+
+# disable both incremental compilation and parallel codegen to reduce the chances of running into
+# rust-lang/rust#47074
+[profile.dev]
+codegen-units = 1
+incremental = false
+
+[profile.release]
+debug = true
+lto = true
