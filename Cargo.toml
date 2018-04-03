@@ -1,6 +1,6 @@
 [package]
 categories = ["embedded", "no-std"]
-name = "esp8266-driver"
+name = "esp8266-serial"
 version = "0.1.0"
 authors = ["James Waples <jamwaffles@gmail.com>"]
 keywords = ["no-std", "rtfm", "esp8266", "wifi", "embedded", "embedded-hal-driver"]
