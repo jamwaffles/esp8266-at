@@ -53,7 +53,7 @@ impl ESP8266 {
     }
 
     pub fn statemachine(&mut self) {
-        let mut buf: String<[u8; 2014]> = String::new();
+        let mut buf: String<[u8; 1024]> = String::new();
 
         let (_, mut c) = self.ringbuf.split();
 
@@ -61,7 +61,12 @@ impl ESP8266 {
             self.rxbuf.push(byte.into());
         }
 
-        if self.rxbuf.as_str().ends_with("ready\r\n") {
+        // let dingaling = self.rxbuf.as_str();
+        // let thing = dingaling.contains("OK");
+
+        // asm::bkpt();
+
+        if self.rxbuf.as_str().contains("ready\r\n") {
             match &self.state {
                 State::Uninitialized => {
                     self.rxbuf.clear();
@@ -81,7 +86,7 @@ impl ESP8266 {
                 }
                 _ => (),
             }
-        } else if self.rxbuf.as_str().ends_with("OK\r\n") {
+        } else if self.rxbuf.as_str().contains("OK\r\n") {
             match &self.state {
                 State::Uninitialized => {
                     self.rxbuf.clear();
@@ -128,8 +133,8 @@ impl ESP8266 {
         match self.state {
             State::Uninitialized => Some(b"AT\r\n"),
             State::Resetting => Some(b"AT+RST\r\n"),
-            // State::SettingMode => Some(b"AT+CWMODE=1\r\n"),
-            // State::Connecting => Some(b"AT+CWJAP=ClownsUnderTheBed,3dooty5g\r\n"),
+            State::SettingMode => Some(b"AT+CWMODE=1\r\n"),
+            State::Connecting => Some(b"AT+CWJAP=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n"),
             _ => None,
         }
     }
@@ -144,9 +149,13 @@ impl ESP8266 {
         p.enqueue(byte.into()).expect("Could not enqueue");
     }
 
-    pub fn handle_response_part(&mut self, buf: &[u8]) {
-        for c in buf {
-            self.rxbuf.push(*c as char);
+    pub fn handle_bytes(&mut self, buf: &[u8]) {
+        let len = self.ringbuf.len();
+
+        let (mut p, _) = self.ringbuf.split();
+
+        for byte in buf {
+            p.enqueue(*byte);
         }
     }
 

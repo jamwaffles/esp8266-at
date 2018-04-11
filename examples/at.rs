@@ -12,35 +12,50 @@ extern crate esp8266_at;
 extern crate stm32f103xx_hal as blue_pill;
 #[macro_use(block)]
 extern crate nb;
+extern crate either;
 extern crate heapless;
 
 // use blue_pill::dma::{CircBuffer, dma1};
 use blue_pill::delay::Delay;
-use blue_pill::dma::{dma1, CircBuffer, Event};
+use blue_pill::dma::{dma1, CircBuffer, Event, Transfer, R};
 use blue_pill::prelude::*;
 use blue_pill::serial::{Event as SerialEvent, Rx, Serial, Tx};
 use blue_pill::stm32f103xx;
 use blue_pill::stm32f103xx::USART3 as USART3_PERIPHERAL;
 use blue_pill::timer::{self, Timer};
 use cortex_m::asm;
+use either::Either;
 use esp8266_at::ESP8266;
 use heapless::RingBuffer;
 use rtfm::{app, Threshold};
+
+const TX_SZ: usize = 64;
+#[allow(non_camel_case_types)]
+type TX_BUF = &'static mut [u8; TX_SZ];
+type TX = Option<
+    Either<
+        (TX_BUF, dma1::C2, Tx<USART3_PERIPHERAL>),
+        Transfer<R, TX_BUF, dma1::C2, Tx<USART3_PERIPHERAL>>,
+    >,
+>;
 
 app! {
     device: stm32f103xx,
 
     resources: {
-        static TX: Tx<USART3_PERIPHERAL>;
-        static RX: Rx<USART3_PERIPHERAL>;
+        // static TX: Tx<USART3_PERIPHERAL>;
+        static TX: TX;
+        // static RX: Rx<USART3_PERIPHERAL>;
         static BUFFER: [[u8; 8]; 2] = [[0; 8]; 2];
         static CB: CircBuffer<[u8; 8], dma1::C3>;
-        static RB: RingBuffer<u8, [u8; 1024]>;
+        // static RB: RingBuffer<u8, [u8; 1024]>;
         static WIFI: ESP8266;
+        // static CHANNELS: blue_pill::dma::dma1::Channels;
+        static TX_BUF: [u8; TX_SZ] = [0; TX_SZ];
     },
 
     init: {
-        resources: [BUFFER],
+        resources: [BUFFER, TX_BUF],
     },
 
     tasks: {
@@ -61,7 +76,7 @@ app! {
     },
 }
 
-fn init(p: init::Peripherals) -> init::LateResources {
+fn init(p: init::Peripherals, r: init::Resources) -> init::LateResources {
     let mut flash = p.device.FLASH.constrain();
     let mut rcc = p.device.RCC.constrain();
 
@@ -97,7 +112,7 @@ fn init(p: init::Peripherals) -> init::LateResources {
         &mut rcc.apb1,
     );
 
-    // let mut channels = p.device.DMA1.split(&mut rcc.ahb);
+    let mut channels = p.device.DMA1.split(&mut rcc.ahb);
 
     // serial.listen(SerialEvent::Rxne);
     let (mut tx, rx) = serial.split();
@@ -115,12 +130,14 @@ fn init(p: init::Peripherals) -> init::LateResources {
 
     channels.3.listen(Event::HalfTransfer);
     channels.3.listen(Event::TransferComplete);
+
     init::LateResources {
         CB: rx.circ_read(channels.3, r.BUFFER),
         WIFI: wifi,
-        RX: rx,
-        TX: tx,
-        RB: RingBuffer::new(),
+        // CHANNELS: channels,
+        TX: Some(Either::Left((r.TX_BUF, channels.2, tx))),
+        // RX: rx,
+        // RB: RingBuffer::new(),
     }
 }
 
@@ -134,23 +151,30 @@ fn tick(_t: &mut Threshold, mut r: SYS_TICK::Resources) {
     r.WIFI.statemachine();
 
     if let Some(send) = r.WIFI.next_command() {
-        for c in send {
-            block!(r.TX.write(*c as u8)).ok();
+        // asm::bkpt();
+        // for c in send {
+        //     block!(r.TX.write(*c as u8)).ok();
+        // }
+
+        let cmd = send.clone();
+
+        let (buf, c, tx) = match r.TX.take().unwrap() {
+            Either::Left((buf, c, tx)) => (buf, c, tx),
+            Either::Right(trans) => trans.wait(),
+        };
+
+        for (i, c) in cmd.iter().enumerate() {
+            buf[i] = *c;
         }
+
+        *r.TX = Some(Either::Right(tx.write_all(c, buf)));
     }
 }
 
 fn rx(_t: &mut Threshold, mut r: DMA1_CHANNEL3::Resources) {
-    let out = r.CB
-        .peek(|_buf, _half| {
-            let b = _buf;
-            let wip = _wip;
-            asm::bkpt();
-            _buf.clone()
-        })
-        .unwrap();
+    let out = r.CB.peek(|_buf, _half| _buf.clone()).unwrap();
 
-    asm::bkpt();
+    r.WIFI.handle_bytes(&out);
 }
 
 // fn usart(_t: &mut Threshold, mut r: USART3::Resources) {
