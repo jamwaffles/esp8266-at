@@ -12,10 +12,11 @@ extern crate esp8266_serial;
 extern crate stm32f103xx_hal as blue_pill;
 #[macro_use(block)]
 extern crate nb;
+extern crate heapless;
 
 // use blue_pill::dma::{CircBuffer, dma1};
 use blue_pill::delay::Delay;
-use blue_pill::dma::{CircBuffer, Event, dma1};
+use blue_pill::dma::{dma1, CircBuffer, Event};
 use blue_pill::prelude::*;
 use blue_pill::serial::{Event as SerialEvent, Rx, Serial, Tx};
 use blue_pill::stm32f103xx;
@@ -23,6 +24,7 @@ use blue_pill::stm32f103xx::USART3 as USART3_PERIPHERAL;
 use blue_pill::timer::{self, Timer};
 use cortex_m::asm;
 use esp8266_serial::ESP8266;
+use heapless::RingBuffer;
 use rtfm::{app, Threshold};
 
 app! {
@@ -33,6 +35,7 @@ app! {
         static RX: Rx<USART3_PERIPHERAL>;
         // static BUFFER: [[u8; 8]; 2] = [[0; 8]; 2];
         // static CB: CircBuffer<[u8; 8], dma1::C3>;
+        static RB: RingBuffer<u8, [u8; 1024]>;
         static WIFI: ESP8266;
     },
 
@@ -48,7 +51,7 @@ app! {
 
         USART3: {
             path: usart,
-            resources: [RX, TX, WIFI],
+            resources: [RX, RB, TX, WIFI],
         },
 
         SYS_TICK: {
@@ -89,7 +92,7 @@ fn init(p: init::Peripherals) -> init::LateResources {
         p.device.USART3,
         (tx, rx),
         &mut afio.mapr,
-        9_600.bps(),
+        115_200.bps(),
         clocks,
         &mut rcc.apb1,
     );
@@ -117,6 +120,7 @@ fn init(p: init::Peripherals) -> init::LateResources {
         WIFI: wifi,
         RX: rx,
         TX: tx,
+        RB: RingBuffer::new(),
     }
 }
 
@@ -127,6 +131,8 @@ fn idle() -> ! {
 }
 
 fn tick(_t: &mut Threshold, mut r: SYS_TICK::Resources) {
+    r.WIFI.statemachine();
+
     if let Some(send) = r.WIFI.next_command() {
         for c in send {
             block!(r.TX.write(*c as u8)).ok();
@@ -149,9 +155,11 @@ fn tick(_t: &mut Threshold, mut r: SYS_TICK::Resources) {
 // }
 
 fn usart(_t: &mut Threshold, mut r: USART3::Resources) {
-    let byte = r.RX.read();
+    // r.WIFI.handle_byte(r.RX.read().unwrap_or('A' as u8));
 
-    r.WIFI.handle_byte(byte.unwrap());
+    let bytes = r.RX.read().unwrap();
+
+    r.RB.split().0.enqueue(byte.into());
 
     // let out = r.CB
     //     .peek_both(|_wip, _buf, _half| {
