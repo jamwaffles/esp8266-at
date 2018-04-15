@@ -49,7 +49,7 @@ app! {
         static BUFFER: [[u8; 8]; 2] = [[0; 8]; 2];
         static CB: CircBuffer<[u8; 8], dma1::C3>;
         // static RB: RingBuffer<u8, [u8; 1024]>;
-        static WIFI: ESP8266;
+        static WIFI: ESP8266<'static>;
         // static CHANNELS: blue_pill::dma::dma1::Channels;
         static TX_BUF: [u8; TX_SZ] = [0; TX_SZ];
     },

@@ -16,23 +16,29 @@ use hal::serial;
 use heapless::{RingBuffer, String};
 
 pub enum State {
-    Uninitialized,
-    Resetting,
-    Reset,
-    SettingMode,
-    Connecting,
+    AtTest,
     Connected,
+    Connecting,
+    Disconnected,
+    EnableDhcp,
+    Reset,
+    Resetting,
+    SetMode,
+    Uninitialized,
+    WifiGotIp,
+    WifiReady,
 }
 
 pub enum Command {
     Reset,
 }
 
-pub struct ESP8266 {
+pub struct ESP8266<'a> {
     /// Receive buffer. ESP8266 has a 256 byte internal buffer so let's mirror that
     rxbuf: String<[u8; 1024]>,
     state: State,
     ringbuf: RingBuffer<u8, [u8; 1024]>,
+    command: Option<&'a [u8]>,
 }
 
 // static mut RB: RingBuffer<i32, [i32; 4]> = RingBuffer::new();
@@ -43,12 +49,13 @@ pub struct ESP8266 {
 
 // let (mut p, mut c) = rb.split();
 
-impl ESP8266 {
+impl<'a> ESP8266<'a> {
     pub fn new() -> Self {
         Self {
             rxbuf: String::from(""),
             state: State::Uninitialized,
             ringbuf: RingBuffer::new(),
+            command: Some(b"AT\r\n"),
         }
     }
 
@@ -61,82 +68,61 @@ impl ESP8266 {
             self.rxbuf.push(byte.into());
         }
 
-        // let dingaling = self.rxbuf.as_str();
-        // let thing = dingaling.contains("OK");
+        for line in self.rxbuf.lines() {
+            match line {
+                "OK" => match self.state {
+                    State::Uninitialized => {
+                        self.command = Some(b"AT\r\n");
+                        self.state = State::AtTest;
+                    }
+                    State::AtTest => {
+                        self.command = Some(b"AT+RST\r\n");
+                        self.state = State::Reset;
+                    }
+                    State::SetMode => {
+                        self.state = State::EnableDhcp;
+                        self.command = Some(b"AT+CWDHCP=1,1\r\n");
+                    }
+                    State::EnableDhcp => {
+                        self.state = State::Connecting;
+                        // Connect to AP without saving to flash
+                        self.command = Some(b"AT+CWJAP_CUR=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n");
+                    }
+                    State::Connecting => {
+                        self.state = State::Connected;
+                        self.command = None;
+                    }
+                    _ => (),
+                },
+                "ready" => {
+                    self.state = State::SetMode;
+                    self.command = Some(b"AT+CWMODE=1\r\n");
+                }
+                "WIFI DISCONNECT" => self.state = State::Disconnected,
+                // "WIFI CONNECTED" => self.state = State::WifiConnected,
+                "WIFI GOT IP" => self.state = State::WifiGotIp,
 
-        // asm::bkpt();
-
-        if self.rxbuf.as_str().contains("ready\r\n") {
-            match &self.state {
-                State::Uninitialized => {
-                    self.rxbuf.clear();
-                    self.state = State::Resetting;
-                }
-                State::Resetting => {
-                    self.rxbuf.clear();
-                    self.state = State::SettingMode;
-                }
-                State::SettingMode => {
-                    self.rxbuf.clear();
-                    self.state = State::Connecting;
-                }
-                State::Connecting => {
-                    self.rxbuf.clear();
-                    self.state = State::Connected;
-                }
-                _ => (),
-            }
-        } else if self.rxbuf.as_str().contains("OK\r\n") {
-            match &self.state {
-                State::Uninitialized => {
-                    self.rxbuf.clear();
-                    self.state = State::Resetting;
-                }
-                State::Resetting => {
-                    self.rxbuf.clear();
-                    self.state = State::SettingMode;
-                }
-                State::SettingMode => {
-                    self.rxbuf.clear();
-                    self.state = State::Connecting;
-                }
-                State::Connecting => {
-                    self.rxbuf.clear();
-                    self.state = State::Connected;
-                }
-                _ => (),
+                _ => match self.state {
+                    State::Uninitialized => {
+                        self.command = Some(b"AT\r\n");
+                        self.state = State::AtTest;
+                    }
+                    _ => (),
+                },
             }
         }
-
-        // match (&self.state, self.rxbuf.as_str().ends_with("OK")) {
-        //     (State::Uninitialized, true) => {
-        //         self.rxbuf.clear();
-        //         self.state = State::Resetting;
-        //     }
-        //     (State::Resetting, true) => {
-        //         self.rxbuf.clear();
-        //         self.state = State::SettingMode;
-        //     }
-        //     (State::SettingMode, true) => {
-        //         self.rxbuf.clear();
-        //         self.state = State::Connecting;
-        //     }
-        //     (State::Connecting, true) => {
-        //         self.rxbuf.clear();
-        //         self.state = State::Connected;
-        //     }
-        //     _ => (),
-        // }
     }
 
     pub fn next_command(&self) -> Option<&[u8]> {
-        match self.state {
-            State::Uninitialized => Some(b"AT\r\n"),
-            State::Resetting => Some(b"AT+RST\r\n"),
-            State::SettingMode => Some(b"AT+CWMODE=1\r\n"),
-            State::Connecting => Some(b"AT+CWJAP=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n"),
-            _ => None,
-        }
+        // match self.state {
+        //     State::Uninitialized => Some(b"AT\r\n"),
+        //     State::Resetting => Some(b"AT+RST\r\n"),
+        //     State::SettingMode => Some(b"AT+CWMODE=1\r\n"),
+        //     State::EnablingDhcp => Some(b"AT+CWDHCP=1,1\r\n"),
+        //     State::Connecting => Some(b"AT+CWJAP=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n"),
+        //     _ => None,
+        // }
+        self.command
     }
 
     pub fn handle_byte(&mut self, byte: u8) {
@@ -155,7 +141,7 @@ impl ESP8266 {
         let (mut p, _) = self.ringbuf.split();
 
         for byte in buf {
-            p.enqueue(*byte);
+            p.enqueue(*byte).expect("Could not enqueue");
         }
     }
 
