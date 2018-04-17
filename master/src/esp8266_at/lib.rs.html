@@ -212,15 +212,6 @@
 <span id="155">155</span>
 <span id="156">156</span>
 <span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
-<span id="162">162</span>
-<span id="163">163</span>
-<span id="164">164</span>
-<span id="165">165</span>
-<span id="166">166</span>
 </pre><pre class="rust ">
 <span class="attribute">#![<span class="ident">no_std</span>]</span>
 
@@ -237,7 +228,7 @@
 
 <span class="kw">use</span> <span class="ident">heapless</span>::<span class="ident">String</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">State</span> {
     <span class="ident">AtTest</span>,
     <span class="ident">Connected</span>,
@@ -258,7 +249,7 @@
 
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ESP8266</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Receive buffer</span>
-    <span class="ident">rxbuf</span>: <span class="ident">String</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">1024</span>]<span class="op">&gt;</span>,
+    <span class="ident">rxbuf</span>: <span class="ident">String</span><span class="op">&lt;</span>[<span class="ident">u8</span>; <span class="number">4096</span>]<span class="op">&gt;</span>,
 
     <span class="doccomment">/// Current state</span>
     <span class="ident">state</span>: <span class="ident">State</span>,
@@ -277,48 +268,39 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">statemachine</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
-        <span class="kw">let</span> <span class="ident">line</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">rxbuf</span>.<span class="ident">lines</span>().<span class="ident">last</span>().<span class="ident">unwrap</span>();
-
-        <span class="kw">match</span> <span class="ident">line</span> {
-            <span class="string">&quot;OK&quot;</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
-                <span class="ident">State</span>::<span class="ident">Uninitialized</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">b&quot;AT+RST\r\n&quot;</span>);
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">AtTest</span>;
-                }
-                <span class="ident">State</span>::<span class="ident">AtTest</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">b&quot;AT+RST\r\n&quot;</span>);
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">Reset</span>;
-                }
-                <span class="ident">State</span>::<span class="ident">SetMode</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">b&quot;AT+CWDHCP=1,1\r\n&quot;</span>);
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">EnableDhcp</span>;
-                }
-                <span class="ident">State</span>::<span class="ident">EnableDhcp</span> <span class="op">=&gt;</span> {
+        <span class="kw">let</span> (<span class="ident">next_command</span>, <span class="ident">next_state</span>) <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">line</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">rxbuf</span>.<span class="ident">lines</span>().<span class="ident">last</span>() {
+            <span class="kw">match</span> <span class="ident">line</span> {
+                <span class="string">&quot;OK&quot;</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+                    <span class="ident">State</span>::<span class="ident">Uninitialized</span> <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="string">&quot;AT+RST\r\n&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">AtTest</span>)),
+                    <span class="ident">State</span>::<span class="ident">AtTest</span> <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="string">&quot;AT+RST\r\n&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">Reset</span>)),
+                    <span class="ident">State</span>::<span class="ident">SetMode</span> <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="string">&quot;AT+CWDHCP=1,1\r\n&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">EnableDhcp</span>)),
                     <span class="comment">// Connect to AP without saving to flash</span>
-                    <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">b&quot;AT+CWJAP_CUR=\&quot;ClownsUnderTheBed\&quot;,\&quot;3dooty5g\&quot;\r\n&quot;</span>);
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">Connecting</span>;
-                }
-                <span class="ident">State</span>::<span class="ident">Connecting</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">None</span>;
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">Connected</span>;
-                }
-                <span class="kw">_</span> <span class="op">=&gt;</span> (),
-            },
-            <span class="string">&quot;ready&quot;</span> <span class="op">=&gt;</span> {
-                <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">b&quot;AT+CWMODE=1\r\n&quot;</span>);
-                <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">SetMode</span>;
+                    <span class="ident">State</span>::<span class="ident">EnableDhcp</span> <span class="op">=&gt;</span> (
+                        <span class="prelude-val">Some</span>(<span class="string">&quot;AT+CWJAP_CUR=\&quot;ClownsUnderTheBed\&quot;,\&quot;3dooty5g\&quot;\r\n&quot;</span>),
+                        <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">Connecting</span>),
+                    ),
+                    <span class="ident">State</span>::<span class="ident">Connecting</span> <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">Connected</span>)),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+                },
+                <span class="string">&quot;ready&quot;</span> <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="string">&quot;AT+CWMODE=1\r\n&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">SetMode</span>)),
+                <span class="string">&quot;WIFI DISCONNECT&quot;</span> <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">Disconnected</span>)),
+                <span class="string">&quot;WIFI GOT IP&quot;</span> <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">WifiGotIp</span>)),
+                <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
+                    <span class="ident">State</span>::<span class="ident">Uninitialized</span> <span class="op">=&gt;</span> (<span class="prelude-val">Some</span>(<span class="string">&quot;AT\r\n&quot;</span>), <span class="prelude-val">Some</span>(<span class="ident">State</span>::<span class="ident">AtTest</span>)),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+                },
             }
-            <span class="string">&quot;WIFI DISCONNECT&quot;</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">Disconnected</span>,
-            <span class="comment">// &quot;WIFI CONNECTED&quot; =&gt; self.state = State::WifiConnected,</span>
-            <span class="string">&quot;WIFI GOT IP&quot;</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">WifiGotIp</span>,
+        } <span class="kw">else</span> {
+            (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>)
+        };
 
-            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">state</span> {
-                <span class="ident">State</span>::<span class="ident">Uninitialized</span> <span class="op">=&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="string">b&quot;AT\r\n&quot;</span>);
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">State</span>::<span class="ident">AtTest</span>;
-                }
-                <span class="kw">_</span> <span class="op">=&gt;</span> (),
-            },
+        <span class="kw">if</span> <span class="ident">next_state</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">next_state</span>.<span class="ident">unwrap</span>();
+        }
+
+        <span class="kw">if</span> <span class="ident">next_command</span>.<span class="ident">is_some</span>() {
+            <span class="self">self</span>.<span class="ident">rxbuf</span>.<span class="ident">clear</span>();
+            <span class="self">self</span>.<span class="ident">command</span> <span class="op">=</span> <span class="ident">next_command</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">as_bytes</span>());
         }
     }
 
