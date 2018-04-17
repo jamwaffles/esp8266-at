@@ -1,20 +1,19 @@
 #![no_std]
 
-extern crate cortex_m;
+// extern crate cortex_m;
 extern crate heapless;
 
 // extern crate stm32f103xx_hal as blue_pill;
 
 // use core::str::from_utf8_unchecked;
-use cortex_m::asm;
+// use cortex_m::asm;
 // #[macro_use(block)]
 // extern crate nb;
 extern crate embedded_hal as hal;
 
-use hal::serial;
-
 use heapless::{RingBuffer, String};
 
+#[derive(Debug)]
 pub enum State {
     AtTest,
     Connected,
@@ -60,6 +59,10 @@ impl<'a> ESP8266<'a> {
     }
 
     pub fn statemachine(&mut self) {
+        if self.ringbuf.is_empty() {
+            return;
+        }
+
         let mut buf: String<[u8; 1024]> = String::new();
 
         let (_, mut c) = self.ringbuf.split();
@@ -67,6 +70,8 @@ impl<'a> ESP8266<'a> {
         while let Some(byte) = c.dequeue() {
             self.rxbuf.push(byte.into());
         }
+
+        let last = self.rxbuf.lines().last().unwrap();
 
         for line in self.rxbuf.lines() {
             match line {
@@ -148,4 +153,52 @@ impl<'a> ESP8266<'a> {
     // pub fn get_buf(&self) -> &str {
     //     self.rxbuf.as_str()
     // }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn recv_str(esp: &mut ESP8266, recv: &str) {
+        for chunk in recv.as_bytes().chunks(8) {
+            esp.handle_bytes(chunk);
+        }
+    }
+
+    fn check_next_cmd(esp: &ESP8266, test: &str) {
+        assert_eq!(esp.next_command(), Some(test.as_bytes()));
+    }
+
+    #[test]
+    fn it_connects() {
+        let mut esp = ESP8266::new();
+
+        check_next_cmd(&esp, "AT\r\n");
+
+        recv_str(&mut esp, "AT\r\n\r\nOK\r\n");
+        esp.statemachine();
+        check_next_cmd(&esp, "AT+RST\r\n");
+
+        recv_str(
+            &mut esp,
+            "AT+RST\r\n\r\nblablablablablablablablablbalablab\r\nready\r\n",
+        );
+        esp.statemachine();
+        check_next_cmd(&esp, "AT+CWMODE=1\r\n");
+
+        recv_str(&mut esp, "AT+CWMODE=1\r\n\r\nOK\r\n");
+        esp.statemachine();
+        check_next_cmd(&esp, "AT+CWDHCP=1,1\r\n");
+
+        recv_str(&mut esp, "AT+CWDHCP=1,1\r\n\r\nOK\r\n");
+        esp.statemachine();
+        check_next_cmd(&esp, "AT+CWJAP_CUR=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n");
+
+        recv_str(
+            &mut esp,
+            "AT+CWJAP_CUR=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n\r\nOK\r\n",
+        );
+        esp.statemachine();
+        assert_eq!(esp.next_command(), None);
+    }
 }
