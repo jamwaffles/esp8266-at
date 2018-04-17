@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["ring_buffer","Ring buffer"]],"struct":[["BufferFullError","Error raised when the buffer is full"],["LinearMap","A map / dictionary backed by an array that performs lookups via linear search"],["String","A String backed by a fixed size `heapless::Vec`"],["Vec","A [`Vec`], vector, backed by a fixed size array"]]});
