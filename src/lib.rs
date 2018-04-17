@@ -13,7 +13,7 @@ extern crate heapless;
 
 use heapless::String;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum State {
     AtTest,
     Connected,
@@ -34,7 +34,7 @@ pub enum Command {
 
 pub struct ESP8266<'a> {
     /// Receive buffer
-    rxbuf: String<[u8; 1024]>,
+    rxbuf: String<[u8; 4096]>,
 
     /// Current state
     state: State,
@@ -53,48 +53,39 @@ impl<'a> ESP8266<'a> {
     }
 
     pub fn statemachine(&mut self) {
-        let line = self.rxbuf.lines().last().unwrap();
-
-        match line {
-            "OK" => match self.state {
-                State::Uninitialized => {
-                    self.command = Some(b"AT+RST\r\n");
-                    self.state = State::AtTest;
-                }
-                State::AtTest => {
-                    self.command = Some(b"AT+RST\r\n");
-                    self.state = State::Reset;
-                }
-                State::SetMode => {
-                    self.command = Some(b"AT+CWDHCP=1,1\r\n");
-                    self.state = State::EnableDhcp;
-                }
-                State::EnableDhcp => {
+        let (next_command, next_state) = if let Some(line) = self.rxbuf.lines().last() {
+            match line {
+                "OK" => match self.state {
+                    State::Uninitialized => (Some("AT+RST\r\n"), Some(State::AtTest)),
+                    State::AtTest => (Some("AT+RST\r\n"), Some(State::Reset)),
+                    State::SetMode => (Some("AT+CWDHCP=1,1\r\n"), Some(State::EnableDhcp)),
                     // Connect to AP without saving to flash
-                    self.command = Some(b"AT+CWJAP_CUR=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n");
-                    self.state = State::Connecting;
-                }
-                State::Connecting => {
-                    self.command = None;
-                    self.state = State::Connected;
-                }
-                _ => (),
-            },
-            "ready" => {
-                self.command = Some(b"AT+CWMODE=1\r\n");
-                self.state = State::SetMode;
+                    State::EnableDhcp => (
+                        Some("AT+CWJAP_CUR=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n"),
+                        Some(State::Connecting),
+                    ),
+                    State::Connecting => (None, Some(State::Connected)),
+                    _ => (None, None),
+                },
+                "ready" => (Some("AT+CWMODE=1\r\n"), Some(State::SetMode)),
+                "WIFI DISCONNECT" => (None, Some(State::Disconnected)),
+                "WIFI GOT IP" => (None, Some(State::WifiGotIp)),
+                _ => match self.state {
+                    State::Uninitialized => (Some("AT\r\n"), Some(State::AtTest)),
+                    _ => (None, None),
+                },
             }
-            "WIFI DISCONNECT" => self.state = State::Disconnected,
-            // "WIFI CONNECTED" => self.state = State::WifiConnected,
-            "WIFI GOT IP" => self.state = State::WifiGotIp,
+        } else {
+            (None, None)
+        };
 
-            _ => match self.state {
-                State::Uninitialized => {
-                    self.command = Some(b"AT\r\n");
-                    self.state = State::AtTest;
-                }
-                _ => (),
-            },
+        if next_state.is_some() {
+            self.state = next_state.unwrap();
+        }
+
+        if next_command.is_some() {
+            self.rxbuf.clear();
+            self.command = next_command.map(|c| c.as_bytes());
         }
     }
 

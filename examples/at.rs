@@ -14,7 +14,7 @@ extern crate stm32f103xx_hal as blue_pill;
 extern crate nb;
 extern crate either;
 extern crate heapless;
-extern crate panic_abort;
+extern crate panic_semihosting;
 
 // use blue_pill::dma::{CircBuffer, dma1};
 use blue_pill::delay::Delay;
