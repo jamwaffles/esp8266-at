@@ -22,9 +22,10 @@ panic-abort = "0.1.0"
 panic-semihosting = "0.1.0"
 
 [dev-dependencies.either]
+version = "*"
+rev = "742056c5e0fa21f4fc4083d0b9dfdb461cfe506b"
+git = "https://github.com/bluss/either.git"
 default-features = false
-version = "1.5.0"
-
 
 # [dependencies.embedded-hal]
 # version = "0.1.2"
