@@ -8,6 +8,7 @@
 extern crate cortex_m;
 extern crate cortex_m_rtfm as rtfm;
 extern crate esp8266_at;
+extern crate panic_abort;
 extern crate stm32f103xx_hal as blue_pill;
 
 // use blue_pill::dma::{CircBuffer, dma1};

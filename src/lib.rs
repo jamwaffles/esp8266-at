@@ -9,7 +9,7 @@ extern crate heapless;
 // use cortex_m::asm;
 // #[macro_use(block)]
 // extern crate nb;
-extern crate embedded_hal as hal;
+// extern crate embedded_hal as hal;
 
 use heapless::String;
 

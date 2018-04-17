@@ -1,8 +1,8 @@
 [target.thumbv6m-none-eabi]
 rustflags = [
   "-C", "link-arg=-Tlink.x",
-  "-C", "linker=arm-none-eabi-ld",
-  "-Z", "linker-flavor=ld",
+  "-C", "linker=lld",
+  "-Z", "linker-flavor=ld.lld",
   "-Z", "thinlto=no",
 ]
 
@@ -10,24 +10,24 @@ rustflags = [
 runner = [ "arm-none-eabi-gdb.exe", "-iex", "set auto-load safe-path ." ]
 rustflags = [
   "-C", "link-arg=-Tlink.x",
-  "-C", "linker=arm-none-eabi-ld",
-  "-Z", "linker-flavor=ld",
+  "-C", "linker=lld",
+  "-Z", "linker-flavor=ld.lld",
   "-Z", "thinlto=no",
 ]
 
 [target.thumbv7em-none-eabi]
 rustflags = [
   "-C", "link-arg=-Tlink.x",
-  "-C", "linker=arm-none-eabi-ld",
-  "-Z", "linker-flavor=ld",
+  "-C", "linker=lld",
+  "-Z", "linker-flavor=ld.lld",
   "-Z", "thinlto=no",
 ]
 
 [target.thumbv7em-none-eabihf]
 rustflags = [
   "-C", "link-arg=-Tlink.x",
-  "-C", "linker=arm-none-eabi-ld",
-  "-Z", "linker-flavor=ld",
+  "-C", "linker=lld",
+  "-Z", "linker-flavor=ld.lld",
   "-Z", "thinlto=no",
 ]
 
