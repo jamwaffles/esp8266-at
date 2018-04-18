@@ -30,8 +30,9 @@ use esp8266_at::ESP8266;
 use heapless::RingBuffer;
 use rtfm::{app, Threshold};
 
-const TX_SZ: usize = 64;
 #[allow(non_camel_case_types)]
+const TX_SZ: usize = 64;
+const RX_SZ: usize = 1;
 type TX_BUF = &'static mut [u8; TX_SZ];
 type TX = Option<
     Either<
@@ -47,8 +48,8 @@ app! {
         // static TX: Tx<USART3_PERIPHERAL>;
         static TX: TX;
         // static RX: Rx<USART3_PERIPHERAL>;
-        static BUFFER: [[u8; 8]; 2] = [[0; 8]; 2];
-        static CB: CircBuffer<[u8; 8], dma1::C3>;
+        static BUFFER: [[u8; RX_SZ]; 2] = [[0; RX_SZ]; 2];
+        static CB: CircBuffer<[u8; RX_SZ], dma1::C3>;
         // static RB: RingBuffer<u8, [u8; 1024]>;
         static WIFI: ESP8266<'static>;
         // static CHANNELS: blue_pill::dma::dma1::Channels;

@@ -28,6 +28,9 @@ pub enum State {
     WifiReady,
     ConnectionFailed,
     Waiting,
+    SetAccessPoint,
+    ConnectedToAp,
+    SetAp,
 }
 
 pub enum Command {
@@ -60,16 +63,17 @@ impl<'a> ESP8266<'a> {
                 "OK" => match self.state {
                     State::Uninitialized => (Some("AT+RST\r\n"), Some(State::AtTest)),
                     State::AtTest => (Some("AT+RST\r\n"), Some(State::Reset)),
-                    State::SetMode => (Some("AT+CWDHCP=1,1\r\n"), Some(State::EnableDhcp)),
+                    State::SetMode => (Some("AT+CWDHCP_CUR=1,1\r\n"), Some(State::EnableDhcp)),
                     // Connect to AP without saving to flash
                     State::EnableDhcp => (
                         Some("AT+CWJAP_CUR=\"ClownsUnderTheBed\",\"3dooty5g\"\r\n"),
-                        Some(State::Connecting),
+                        Some(State::SetAp),
                     ),
-                    State::Connecting => (None, Some(State::Connected)),
+                    State::SetAp => (None, Some(State::ConnectedToAp)),
+                    State::WifiGotIp => (None, Some(State::Connected)),
                     _ => (None, None),
                 },
-                "ready" => (Some("AT+CWMODE=1\r\n"), Some(State::SetMode)),
+                "ready" => (Some("AT+CWMODE_CUR=1\r\n"), Some(State::SetMode)),
                 "WIFI DISCONNECT" => (None, Some(State::Disconnected)),
                 "WIFI GOT IP" => (None, Some(State::WifiGotIp)),
                 "busy p..." => (None, Some(State::Waiting)),
