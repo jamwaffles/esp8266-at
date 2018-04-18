@@ -26,6 +26,8 @@ pub enum State {
     Uninitialized,
     WifiGotIp,
     WifiReady,
+    ConnectionFailed,
+    Waiting,
 }
 
 pub enum Command {
@@ -70,6 +72,8 @@ impl<'a> ESP8266<'a> {
                 "ready" => (Some("AT+CWMODE=1\r\n"), Some(State::SetMode)),
                 "WIFI DISCONNECT" => (None, Some(State::Disconnected)),
                 "WIFI GOT IP" => (None, Some(State::WifiGotIp)),
+                "busy p..." => (None, Some(State::Waiting)),
+                "FAIL" => (None, Some(State::ConnectionFailed)),
                 _ => match self.state {
                     State::Uninitialized => (Some("AT\r\n"), Some(State::AtTest)),
                     _ => (None, None),
@@ -81,6 +85,7 @@ impl<'a> ESP8266<'a> {
 
         if next_state.is_some() {
             self.state = next_state.unwrap();
+            self.command = None;
         }
 
         if next_command.is_some() {
