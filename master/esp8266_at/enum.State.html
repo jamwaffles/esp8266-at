@@ -1,61 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `State` enum in crate `esp8266_at`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, State">
-
-    <title>esp8266_at::State - Rust</title>
-
-    <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css"
-          id="mainThemeStyle">
-    
-    <link rel="stylesheet" type="text/css" href="../dark.css">
-    <link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle">
-    <script src="../storage.js"></script>
-    
-
-    
-    
-</head>
-<body class="rustdoc enum">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <nav class="sidebar">
-        <div class="sidebar-menu">&#9776;</div>
-        
-        <p class='location'>Enum State</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#variants">Variants</a><div class="sidebar-links"><a href="#variant.AtTest">AtTest</a><a href="#variant.Connected">Connected</a><a href="#variant.Connecting">Connecting</a><a href="#variant.Disconnected">Disconnected</a><a href="#variant.EnableDhcp">EnableDhcp</a><a href="#variant.Reset">Reset</a><a href="#variant.Resetting">Resetting</a><a href="#variant.SetMode">SetMode</a><a href="#variant.Uninitialized">Uninitialized</a><a href="#variant.WifiGotIp">WifiGotIp</a><a href="#variant.WifiReady">WifiReady</a><a href="#variant.ConnectionFailed">ConnectionFailed</a><a href="#variant.Waiting">Waiting</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a></div></div><p class='location'><a href='index.html'>esp8266_at</a></p><script>window.sidebarCurrent = {name: 'State', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
-    </nav>
-
-    <div class="theme-picker">
-        <button id="theme-picker" aria-label="Pick another theme!">
-            <img src="../brush.svg" width="18" alt="Pick another theme!">
-        </button>
-        <div id="theme-choices"></div>
-    </div>
-    <script src="../theme.js"></script>
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content"><h1 class='fqn'><span class='in-band'>Enum <a href='index.html'>esp8266_at</a>::<wbr><a class="enum" href=''>State</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/esp8266_at/lib.rs.html#17-31' title='goto source code'>[src]</a></span></h1><div class="docblock type-decl"><pre class='rust enum'>pub enum State {
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `State` enum in crate `esp8266_at`."><meta name="keywords" content="rust, rustlang, rust-lang, State"><title>esp8266_at::State - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc enum"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Enum State</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#variants">Variants</a><div class="sidebar-links"><a href="#variant.AtTest">AtTest</a><a href="#variant.Connected">Connected</a><a href="#variant.Connecting">Connecting</a><a href="#variant.Disconnected">Disconnected</a><a href="#variant.EnableDhcp">EnableDhcp</a><a href="#variant.Reset">Reset</a><a href="#variant.Resetting">Resetting</a><a href="#variant.SetMode">SetMode</a><a href="#variant.Uninitialized">Uninitialized</a><a href="#variant.WifiGotIp">WifiGotIp</a><a href="#variant.WifiReady">WifiReady</a><a href="#variant.ConnectionFailed">ConnectionFailed</a><a href="#variant.Waiting">Waiting</a><a href="#variant.SetAccessPoint">SetAccessPoint</a><a href="#variant.ConnectedToAp">ConnectedToAp</a><a href="#variant.SetAp">SetAp</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a><a href="#impl-Copy">Copy</a><a href="#impl-Clone">Clone</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a></div></div><p class='location'><a href='index.html'>esp8266_at</a></p><script>window.sidebarCurrent = {name: 'State', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Enum <a href='index.html'>esp8266_at</a>::<wbr><a class="enum" href=''>State</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/esp8266_at/lib.rs.html#17-34' title='goto source code'>[src]</a></span></h1><div class="docblock type-decl"><pre class='rust enum'>pub enum State {
     AtTest,
     Connected,
     Connecting,
@@ -69,9 +12,12 @@
     WifiReady,
     ConnectionFailed,
     Waiting,
+    SetAccessPoint,
+    ConnectedToAp,
+    SetAp,
 }</pre></div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
-<span id="variant.AtTest" class="variant small-section-header"><a href="#variant.AtTest" class="anchor field"></a><span id='AtTest.v' class='invisible'><code>AtTest</code></span></span><span id="variant.Connected" class="variant small-section-header"><a href="#variant.Connected" class="anchor field"></a><span id='Connected.v' class='invisible'><code>Connected</code></span></span><span id="variant.Connecting" class="variant small-section-header"><a href="#variant.Connecting" class="anchor field"></a><span id='Connecting.v' class='invisible'><code>Connecting</code></span></span><span id="variant.Disconnected" class="variant small-section-header"><a href="#variant.Disconnected" class="anchor field"></a><span id='Disconnected.v' class='invisible'><code>Disconnected</code></span></span><span id="variant.EnableDhcp" class="variant small-section-header"><a href="#variant.EnableDhcp" class="anchor field"></a><span id='EnableDhcp.v' class='invisible'><code>EnableDhcp</code></span></span><span id="variant.Reset" class="variant small-section-header"><a href="#variant.Reset" class="anchor field"></a><span id='Reset.v' class='invisible'><code>Reset</code></span></span><span id="variant.Resetting" class="variant small-section-header"><a href="#variant.Resetting" class="anchor field"></a><span id='Resetting.v' class='invisible'><code>Resetting</code></span></span><span id="variant.SetMode" class="variant small-section-header"><a href="#variant.SetMode" class="anchor field"></a><span id='SetMode.v' class='invisible'><code>SetMode</code></span></span><span id="variant.Uninitialized" class="variant small-section-header"><a href="#variant.Uninitialized" class="anchor field"></a><span id='Uninitialized.v' class='invisible'><code>Uninitialized</code></span></span><span id="variant.WifiGotIp" class="variant small-section-header"><a href="#variant.WifiGotIp" class="anchor field"></a><span id='WifiGotIp.v' class='invisible'><code>WifiGotIp</code></span></span><span id="variant.WifiReady" class="variant small-section-header"><a href="#variant.WifiReady" class="anchor field"></a><span id='WifiReady.v' class='invisible'><code>WifiReady</code></span></span><span id="variant.ConnectionFailed" class="variant small-section-header"><a href="#variant.ConnectionFailed" class="anchor field"></a><span id='ConnectionFailed.v' class='invisible'><code>ConnectionFailed</code></span></span><span id="variant.Waiting" class="variant small-section-header"><a href="#variant.Waiting" class="anchor field"></a><span id='Waiting.v' class='invisible'><code>Waiting</code></span></span>
+<span id="variant.AtTest" class="variant small-section-header"><a href="#variant.AtTest" class="anchor field"></a><span id='AtTest.v' class='invisible'><code>AtTest</code></span></span><span id="variant.Connected" class="variant small-section-header"><a href="#variant.Connected" class="anchor field"></a><span id='Connected.v' class='invisible'><code>Connected</code></span></span><span id="variant.Connecting" class="variant small-section-header"><a href="#variant.Connecting" class="anchor field"></a><span id='Connecting.v' class='invisible'><code>Connecting</code></span></span><span id="variant.Disconnected" class="variant small-section-header"><a href="#variant.Disconnected" class="anchor field"></a><span id='Disconnected.v' class='invisible'><code>Disconnected</code></span></span><span id="variant.EnableDhcp" class="variant small-section-header"><a href="#variant.EnableDhcp" class="anchor field"></a><span id='EnableDhcp.v' class='invisible'><code>EnableDhcp</code></span></span><span id="variant.Reset" class="variant small-section-header"><a href="#variant.Reset" class="anchor field"></a><span id='Reset.v' class='invisible'><code>Reset</code></span></span><span id="variant.Resetting" class="variant small-section-header"><a href="#variant.Resetting" class="anchor field"></a><span id='Resetting.v' class='invisible'><code>Resetting</code></span></span><span id="variant.SetMode" class="variant small-section-header"><a href="#variant.SetMode" class="anchor field"></a><span id='SetMode.v' class='invisible'><code>SetMode</code></span></span><span id="variant.Uninitialized" class="variant small-section-header"><a href="#variant.Uninitialized" class="anchor field"></a><span id='Uninitialized.v' class='invisible'><code>Uninitialized</code></span></span><span id="variant.WifiGotIp" class="variant small-section-header"><a href="#variant.WifiGotIp" class="anchor field"></a><span id='WifiGotIp.v' class='invisible'><code>WifiGotIp</code></span></span><span id="variant.WifiReady" class="variant small-section-header"><a href="#variant.WifiReady" class="anchor field"></a><span id='WifiReady.v' class='invisible'><code>WifiReady</code></span></span><span id="variant.ConnectionFailed" class="variant small-section-header"><a href="#variant.ConnectionFailed" class="anchor field"></a><span id='ConnectionFailed.v' class='invisible'><code>ConnectionFailed</code></span></span><span id="variant.Waiting" class="variant small-section-header"><a href="#variant.Waiting" class="anchor field"></a><span id='Waiting.v' class='invisible'><code>Waiting</code></span></span><span id="variant.SetAccessPoint" class="variant small-section-header"><a href="#variant.SetAccessPoint" class="anchor field"></a><span id='SetAccessPoint.v' class='invisible'><code>SetAccessPoint</code></span></span><span id="variant.ConnectedToAp" class="variant small-section-header"><a href="#variant.ConnectedToAp" class="anchor field"></a><span id='ConnectedToAp.v' class='invisible'><code>ConnectedToAp</code></span></span><span id="variant.SetAp" class="variant small-section-header"><a href="#variant.SetAp" class="anchor field"></a><span id='SetAp.v' class='invisible'><code>SetAp</code></span></span>
                 <h2 id='implementations' class='small-section-header'>
                   Trait Implementations<a href='#implementations' class='anchor'></a>
                 </h2>
@@ -83,68 +29,4 @@
                   Auto Trait Implementations<a href='#synthetic-implementations' class='anchor'></a>
                 </h2>
                 <div id='synthetic-implementations-list'>
-            <h3 id='impl-Send' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="enum" href="../esp8266_at/enum.State.html" title="enum esp8266_at::State">State</a></code><a href='#impl-Send' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div><h3 id='impl-Sync' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="enum" href="../esp8266_at/enum.State.html" title="enum esp8266_at::State">State</a></code><a href='#impl-Sync' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div></div></section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <aside id="help" class="hidden">
-        <div>
-            <h1 class="hidden">Help</h1>
-
-            <div class="shortcuts">
-                <h2>Keyboard Shortcuts</h2>
-
-                <dl>
-                    <dt><kbd>?</kbd></dt>
-                    <dd>Show this help dialog</dd>
-                    <dt><kbd>S</kbd></dt>
-                    <dd>Focus the search field</dd>
-                    <dt><kbd>↑</kbd></dt>
-                    <dd>Move up in search results</dd>
-                    <dt><kbd>↓</kbd></dt>
-                    <dd>Move down in search results</dd>
-                    <dt><kbd>↹</kbd></dt>
-                    <dd>Switch tab</dd>
-                    <dt><kbd>&#9166;</kbd></dt>
-                    <dd>Go to active search result</dd>
-                    <dt><kbd>+</kbd></dt>
-                    <dd>Expand all sections</dd>
-                    <dt><kbd>-</kbd></dt>
-                    <dd>Collapse all sections</dd>
-                </dl>
-            </div>
-
-            <div class="infos">
-                <h2>Search Tricks</h2>
-
-                <p>
-                    Prefix searches with a type followed by a colon (e.g.
-                    <code>fn:</code>) to restrict the search to a given type.
-                </p>
-
-                <p>
-                    Accepted types are: <code>fn</code>, <code>mod</code>,
-                    <code>struct</code>, <code>enum</code>,
-                    <code>trait</code>, <code>type</code>, <code>macro</code>,
-                    and <code>const</code>.
-                </p>
-
-                <p>
-                    Search functions by type signature (e.g.
-                    <code>vec -> usize</code> or <code>* -> vec</code>)
-                </p>
-            </div>
-        </div>
-    </aside>
-
-    
-
-    <script>
-        window.rootPath = "../";
-        window.currentCrate = "esp8266_at";
-    </script>
-    <script src="../main.js"></script>
-    <script defer src="../search-index.js"></script>
-</body>
-</html>
+            <h3 id='impl-Send' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="enum" href="../esp8266_at/enum.State.html" title="enum esp8266_at::State">State</a></code><a href='#impl-Send' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div><h3 id='impl-Sync' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="enum" href="../esp8266_at/enum.State.html" title="enum esp8266_at::State">State</a></code><a href='#impl-Sync' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div></div></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "esp8266_at";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
