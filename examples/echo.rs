@@ -1,5 +1,5 @@
 #![no_std]
-#![feature(proc_macro)]
+#![no_main]
 #![deny(unsafe_code)]
 // #![deny(warnings)]
 #![feature(const_fn)]
@@ -8,8 +8,10 @@
 extern crate cortex_m;
 extern crate cortex_m_rtfm as rtfm;
 extern crate esp8266_at;
-extern crate panic_abort;
+extern crate panic_semihosting;
 extern crate stm32f103xx_hal as blue_pill;
+#[macro_use(entry)]
+extern crate cortex_m_rt;
 
 // use blue_pill::dma::{CircBuffer, dma1};
 use blue_pill::prelude::*;
@@ -34,6 +36,14 @@ app! {
         },
     }
 }
+
+fn ent() -> ! {
+    main();
+
+    loop {}
+}
+
+entry!(ent);
 
 fn init(p: init::Peripherals) -> init::LateResources {
     let mut flash = p.device.FLASH.constrain();
