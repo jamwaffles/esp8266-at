@@ -13,10 +13,10 @@ heapless = "0.3.7"
 cortex-m = "0.5.4"
 cortex-m-rt = "0.5.2"
 cortex-m-rtfm = "0.3.4"
-cortex-m-rtfm-macros = "0.3.2"
+cortex-m-semihosting = "0.3.1"
+nb = "0.1.1"
 panic-itm = "0.2.0"
 panic-semihosting = "0.3.0"
-nb = "0.1.1"
 
 [dev-dependencies.either]
 default-features = false
@@ -28,11 +28,3 @@ version = "*"
 features = ["rt"]
 git = "https://github.com/japaric/stm32f103xx-hal.git"
 version = "*"
-
-# [profile.dev]
-# codegen-units = 1
-# incremental = false
-
-# [profile.release]
-# debug = true
-# lto = true
