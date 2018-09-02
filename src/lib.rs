@@ -11,6 +11,7 @@ extern crate heapless;
 // extern crate nb;
 // extern crate embedded_hal as hal;
 
+use heapless::consts::*;
 use heapless::String;
 
 #[derive(Debug, Copy, Clone)]
@@ -39,7 +40,7 @@ pub enum Command {
 
 pub struct ESP8266<'a> {
     /// Receive buffer
-    rxbuf: String<[u8; 4096]>,
+    rxbuf: String<U4096>,
 
     /// Current state
     state: State,

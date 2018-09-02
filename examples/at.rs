@@ -1,4 +1,5 @@
 #![no_std]
+#![no_main]
 #![feature(proc_macro)]
 #![deny(unsafe_code)]
 // #![deny(warnings)]
@@ -7,6 +8,8 @@
 
 #[macro_use(singleton)]
 extern crate cortex_m;
+#[macro_use(entry)]
+extern crate cortex_m_rt;
 extern crate cortex_m_rtfm as rtfm;
 extern crate esp8266_at;
 extern crate stm32f103xx_hal as blue_pill;
@@ -48,12 +51,12 @@ app! {
         // static TX: Tx<USART3_PERIPHERAL>;
         static TX: TX;
         // static RX: Rx<USART3_PERIPHERAL>;
-        static BUFFER: [[u8; RX_SZ]; 2] = [[0; RX_SZ]; 2];
-        static CB: CircBuffer<[u8; RX_SZ], dma1::C3>;
+        static BUFFER: [[u8; 1]; 2] = [[0; 1]; 2];
+        static CB: CircBuffer<[u8; 1], dma1::C3>;
         // static RB: RingBuffer<u8, [u8; 1024]>;
         static WIFI: ESP8266<'static>;
         // static CHANNELS: blue_pill::dma::dma1::Channels;
-        static TX_BUF: [u8; TX_SZ] = [0; TX_SZ];
+        static TX_BUF: [u8; 64] = [0; 64];
     },
 
     init: {
@@ -77,6 +80,14 @@ app! {
         },
     },
 }
+
+fn ent() -> ! {
+    main();
+
+    loop {}
+}
+
+entry!(ent);
 
 fn init(p: init::Peripherals, r: init::Resources) -> init::LateResources {
     let mut flash = p.device.FLASH.constrain();
