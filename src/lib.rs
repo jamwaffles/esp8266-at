@@ -1,16 +1,5 @@
 #![no_std]
 
-// extern crate cortex_m;
-extern crate heapless;
-
-// extern crate stm32f103xx_hal as blue_pill;
-
-// use core::str::from_utf8_unchecked;
-// use cortex_m::asm;
-// #[macro_use(block)]
-// extern crate nb;
-// extern crate embedded_hal as hal;
-
 use heapless::consts::*;
 use heapless::String;
 

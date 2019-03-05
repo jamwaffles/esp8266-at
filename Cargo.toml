@@ -1,31 +1,20 @@
 [package]
-authors = ["James Waples <jamwaffles@gmail.com>"]
+authors = ["James Waples <james@wapl.es>"]
 categories = ["embedded", "no-std"]
-keywords = ["no-std", "rtfm", "esp8266", "at", "wifi", "embedded", "embedded-hal-driver"]
+keywords = ["no-std", "esp8266", "wifi", "embedded-hal-driver"]
 name = "esp8266-at"
 repository = "https://github.com/jamwaffles/esp8266-at"
 version = "0.1.0"
+edition = "2018"
 [dependencies]
-embedded-hal = "0.2.1"
-heapless = "0.3.7"
-stm32f103xx = "0.10.0"
+embedded-hal = "0.2.2"
+heapless = "0.4.2"
 
 [dev-dependencies]
-cortex-m = "0.5.4"
-cortex-m-rt = "0.5.2"
-cortex-m-rtfm = "0.3.4"
-cortex-m-semihosting = "0.3.1"
-nb = "0.1.1"
-panic-itm = "0.2.0"
-panic-semihosting = "0.3.0"
+cortex-m = "0.5.8"
+cortex-m-rt = "0.6.6"
+panic-semihosting = "0.5.1"
 
-[dev-dependencies.either]
-default-features = false
-git = "https://github.com/bluss/either.git"
-rev = "742056c5e0fa21f4fc4083d0b9dfdb461cfe506b"
-version = "*"
-
-[dev-dependencies.stm32f103xx-hal]
-features = ["rt"]
-git = "https://github.com/japaric/stm32f103xx-hal.git"
-version = "*"
+[dev-dependencies.stm32f1xx-hal]
+version = "0.2.0"
+features = [ "rt", "stm32f103" ]
