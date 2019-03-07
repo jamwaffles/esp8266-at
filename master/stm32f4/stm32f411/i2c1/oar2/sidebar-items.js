@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ENDUALR","Possible values of the field `ENDUAL`"],["ENDUALW","Values that can be written to the field `ENDUAL`"]],"struct":[["ADD2R","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_ADD2W","Proxy"],["_ENDUALW","Proxy"]]});

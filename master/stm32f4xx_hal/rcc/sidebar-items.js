@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CFGR",""],["Clocks","Frozen clock frequencies"],["Rcc","Constrained RCC peripheral"]],"trait":[["RccExt","Extension trait that constrains the `RCC` peripheral"]]});

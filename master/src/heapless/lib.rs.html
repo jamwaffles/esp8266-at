@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/heapless-0.2.5/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/heapless-0.4.2/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../heapless/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -121,151 +121,129 @@
 <span id="121">121</span>
 <span id="122">122</span>
 <span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
-<span id="126">126</span>
-<span id="127">127</span>
-<span id="128">128</span>
-<span id="129">129</span>
-<span id="130">130</span>
-<span id="131">131</span>
-<span id="132">132</span>
-<span id="133">133</span>
-<span id="134">134</span>
-</pre><pre class="rust ">
+</pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! `static` friendly data structures that don&#39;t require dynamic memory allocation</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//! The core principle behind `heapless` is that its data structures are backed by a *static* memory</span>
+<span class="doccomment">//! allocation. For example, you can think of `heapless::Vec` as an alternative version of</span>
+<span class="doccomment">//! `std::Vec` with fixed capacity and that can&#39;t be re-allocated on the fly (e.g. via `push`).</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! ## `Vec`</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! use heapless::Vec;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let mut xs: Vec&lt;u8, [u8; 4]&gt; = Vec::new();</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! assert!(xs.push(0).is_ok());</span>
-<span class="doccomment">//! assert!(xs.push(1).is_ok());</span>
-<span class="doccomment">//! assert!(xs.push(2).is_ok());</span>
-<span class="doccomment">//! assert!(xs.push(3).is_ok());</span>
-<span class="doccomment">//! assert!(xs.push(4).is_err()); // full</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! assert_eq!(xs.pop(), Some(3));</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## `String`</span>
+<span class="doccomment">//! All `heapless` data structures store their memory allocation *inline* and specify their capacity</span>
+<span class="doccomment">//! via their type parameter `N`. This means that you can instantiate a `heapless` data structure on</span>
+<span class="doccomment">//! the stack, in a `static` variable, or even in the heap.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! use std::fmt::Write;</span>
+<span class="doccomment">//! use heapless::Vec; // fixed capacity `std::Vec`</span>
+<span class="doccomment">//! use heapless::consts::U8; // type level integer used to specify capacity</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! use heapless::String;</span>
+<span class="doccomment">//! // on the stack</span>
+<span class="doccomment">//! let mut xs: Vec&lt;u8, U8&gt; = Vec::new(); // can hold up to 8 elements</span>
+<span class="doccomment">//! xs.push(42).unwrap();</span>
+<span class="doccomment">//! assert_eq!(xs.pop(), Some(42));</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let mut s = String::&lt;[u8; 8]&gt;::new();</span>
+<span class="doccomment">//! // in a `static` variable</span>
+<span class="doccomment">//! // static mut XS: Vec&lt;u8, U8&gt; = Vec::new(); // requires feature `const-fn`</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! write!(s, &quot;hello&quot;).unwrap();</span>
+<span class="doccomment">//! // work around</span>
+<span class="doccomment">//! static mut XS: Option&lt;Vec&lt;u8, U8&gt;&gt; = None;</span>
+<span class="doccomment">//! unsafe { XS = Some(Vec::new()) };</span>
+<span class="doccomment">//! let xs = unsafe { XS.as_mut().unwrap() };</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! assert_eq!(s.as_bytes(), b&quot;hello&quot;);</span>
+<span class="doccomment">//! xs.push(42);</span>
+<span class="doccomment">//! assert_eq!(xs.pop(), Some(42));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // in the heap (though kind of pointless because no reallocation)</span>
+<span class="doccomment">//! let mut ys: Box&lt;Vec&lt;u8, U8&gt;&gt; = Box::new(Vec::new());</span>
+<span class="doccomment">//! ys.push(42).unwrap();</span>
+<span class="doccomment">//! assert_eq!(ys.pop(), Some(42));</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! ## `LinearMap`</span>
+<span class="doccomment">//! Because they have fixed capacity `heapless` data structures don&#39;t implicitly reallocate. This</span>
+<span class="doccomment">//! means that operations like `heapless::Vec.push` are *truly* constant time rather than amortized</span>
+<span class="doccomment">//! constant time with potentially unbounded (depends on the allocator) worst case execution time</span>
+<span class="doccomment">//! (which is bad / unacceptable for hard real time applications).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! `heapless` data structures don&#39;t use a memory allocator which means no risk of an uncatchable</span>
+<span class="doccomment">//! Out Of Memory (OOM) condition (which defaults to abort) while performing operations</span>
+<span class="doccomment">//! on them. It&#39;s certainly possible to run out of capacity while growing `heapless` data</span>
+<span class="doccomment">//! structures, but the API lets you handle this possibility by returning a `Result` on operations</span>
+<span class="doccomment">//! that may exhaust the capacity of the data structure.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! List of currently implemented data structures:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! - [`BinaryHeap`](binary_heap/struct.BinaryHeap.html) -- priority queue</span>
+<span class="doccomment">//! - [`IndexMap`](struct.IndexMap.html) -- hash table</span>
+<span class="doccomment">//! - [`IndexSet`](struct.IndexSet.html) -- hash set</span>
+<span class="doccomment">//! - [`LinearMap`](struct.LinearMap.html)</span>
+<span class="doccomment">//! - [`Queue`](spsc/struct.Queue.html) -- single producer single consumer lockless queue</span>
+<span class="doccomment">//! - [`String`](struct.String.html)</span>
+<span class="doccomment">//! - [`Vec`](struct.Vec.html)</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! In order to target the Rust stable toolchain, there are some feature gates.</span>
+<span class="doccomment">//! The features need to be enabled in `Cargo.toml` in order to use them.</span>
+<span class="doccomment">//! Once the underlaying features in Rust are stable,</span>
+<span class="doccomment">//! these feature gates might be activated by default.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Example of `Cargo.toml`:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! ...</span>
+<span class="doccomment">//! [dependencies]</span>
+<span class="doccomment">//! heapless = { version = &quot;0.4.0&quot;, features = [&quot;const-fn&quot;] }</span>
+<span class="doccomment">//! ...</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! use heapless::LinearMap;</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! let mut map: LinearMap&lt;_, _, [_; 8]&gt; = LinearMap::new();</span>
+<span class="doccomment">//! Currently the following features are availbale and not active by default:</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! map.insert(&quot;a&quot;, 1);</span>
-<span class="doccomment">//! map.insert(&quot;b&quot;, 2);</span>
-<span class="doccomment">//! map.insert(&quot;c&quot;, 3);</span>
+<span class="doccomment">//! - `&quot;const-fn&quot;` -- Enable the nightly `const_fn` feature and make most `new` methods `const`.</span>
+<span class="doccomment">//!      This way they can be used to initialize static memory at compile time.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! assert_eq!(map[&quot;a&quot;], 1);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! map[&quot;b&quot;] += 1;</span>
-<span class="doccomment">//! assert_eq!(map[&quot;b&quot;], 3);</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! map.remove(&quot;c&quot;);</span>
-<span class="doccomment">//! assert_eq!(map.len(), 2);</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ## `RingBuffer`</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! use heapless::RingBuffer;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! let mut rb: RingBuffer&lt;u8, [u8; 4]&gt; = RingBuffer::new();</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! assert!(rb.enqueue(0).is_ok());</span>
-<span class="doccomment">//! assert!(rb.enqueue(1).is_ok());</span>
-<span class="doccomment">//! assert!(rb.enqueue(2).is_ok());</span>
-<span class="doccomment">//! assert!(rb.enqueue(3).is_err()); // full</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! assert_eq!(rb.dequeue(), Some(0));</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ### Single producer single consumer mode</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! ```</span>
-<span class="doccomment">//! use heapless::RingBuffer;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! static mut RB: RingBuffer&lt;Event, [Event; 4]&gt; = RingBuffer::new();</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! enum Event { A, B }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! fn main() {</span>
-<span class="doccomment">//!     // NOTE(unsafe) beware of aliasing the `consumer` end point</span>
-<span class="doccomment">//!     let mut consumer = unsafe { RB.split().1 };</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!     loop {</span>
-<span class="doccomment">//!         // `dequeue` is a lockless operation</span>
-<span class="doccomment">//!         match consumer.dequeue() {</span>
-<span class="doccomment">//!             Some(Event::A) =&gt; { /* .. */ },</span>
-<span class="doccomment">//!             Some(Event::B) =&gt; { /* .. */ },</span>
-<span class="doccomment">//!             None =&gt; { /* sleep */},</span>
-<span class="doccomment">//!         }</span>
-<span class="doccomment">//! #       break</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! // this is a different execution context that can preempt `main`</span>
-<span class="doccomment">//! fn interrupt_handler() {</span>
-<span class="doccomment">//!     // NOTE(unsafe) beware of aliasing the `producer` end point</span>
-<span class="doccomment">//!     let mut producer = unsafe { RB.split().0 };</span>
-<span class="doccomment">//! #   let condition = true;</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!     // ..</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!     if condition {</span>
-<span class="doccomment">//!         producer.enqueue(Event::A).unwrap();</span>
-<span class="doccomment">//!     } else {</span>
-<span class="doccomment">//!         producer.enqueue(Event::B).unwrap();</span>
-<span class="doccomment">//!     }</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//!     // ..</span>
-<span class="doccomment">//! }</span>
-<span class="doccomment">//! ```</span>
 
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">warnings</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">const_fn</span>)]</span>
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">core_intrinsics</span>)]</span>
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">unsize</span>)]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const-fn&quot;</span>, <span class="ident">feature</span>(<span class="ident">const_fn</span>))]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const-fn&quot;</span>, <span class="ident">feature</span>(<span class="ident">untagged_unions</span>))]</span>
 <span class="attribute">#![<span class="ident">no_std</span>]</span>
 
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">untagged_option</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">generic_array</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">hash32</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">std</span>;
 
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>)]</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">serde</span>;
+
+<span class="attribute">#[<span class="ident">macro_use</span>]</span>
+<span class="kw">mod</span> <span class="ident">const_fn</span>;
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">binary_heap</span>::<span class="ident">BinaryHeap</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">generic_array</span>::<span class="ident">typenum</span>::<span class="ident">consts</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">generic_array</span>::<span class="ident">ArrayLength</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">indexmap</span>::{<span class="ident">FnvIndexMap</span>, <span class="ident">IndexMap</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">indexset</span>::{<span class="ident">FnvIndexSet</span>, <span class="ident">IndexSet</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">linear_map</span>::<span class="ident">LinearMap</span>;
-<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">ring_buffer</span>::<span class="ident">RingBuffer</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">string</span>::<span class="ident">String</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">vec</span>::<span class="ident">Vec</span>;
 
 <span class="kw">mod</span> <span class="ident">cfail</span>;
+<span class="kw">mod</span> <span class="ident">indexmap</span>;
+<span class="kw">mod</span> <span class="ident">indexset</span>;
 <span class="kw">mod</span> <span class="ident">linear_map</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">ring_buffer</span>;
 <span class="kw">mod</span> <span class="ident">string</span>;
 <span class="kw">mod</span> <span class="ident">vec</span>;
 
-<span class="doccomment">/// Error raised when the buffer is full</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BufferFullError</span>;
-</pre>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "heapless";</script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">de</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde&quot;</span>)]</span>
+<span class="kw">mod</span> <span class="ident">ser</span>;
+
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">binary_heap</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">spsc</span>;
+
+<span class="kw">mod</span> <span class="ident">__core</span>;
+<span class="kw">mod</span> <span class="ident">sealed</span>;
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "heapless";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

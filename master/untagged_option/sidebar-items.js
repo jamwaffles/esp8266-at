@@ -1,1 +1,0 @@
-initSidebarItems({"union":[["UntaggedOption","A union which either holds a `T` or nothing."]]});

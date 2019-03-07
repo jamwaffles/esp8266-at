@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["PLLI2SMR","Value of the field"],["PLLI2SNR","Value of the field"],["PLLI2SRR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_PLLI2SMW","Proxy"],["_PLLI2SNW","Proxy"],["_PLLI2SRW","Proxy"]]});

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/embedded-hal-0.1.2/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-1ecc6299db9ec823/embedded-hal-0.2.2/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../embedded_hal/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -975,7 +975,23 @@
 <span id="975">975</span>
 <span id="976">976</span>
 <span id="977">977</span>
-</pre><pre class="rust ">
+<span id="978">978</span>
+<span id="979">979</span>
+<span id="980">980</span>
+<span id="981">981</span>
+<span id="982">982</span>
+<span id="983">983</span>
+<span id="984">984</span>
+<span id="985">985</span>
+<span id="986">986</span>
+<span id="987">987</span>
+<span id="988">988</span>
+<span id="989">989</span>
+<span id="990">990</span>
+<span id="991">991</span>
+<span id="992">992</span>
+<span id="993">993</span>
+</pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! A Hardware Abstraction Layer (HAL) for embedded systems</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! **NOTE** This HAL is still is active development. Expect the traits presented here to be</span>
@@ -1068,19 +1084,20 @@
 <span class="doccomment">//! [`WouldBlock`]: https://docs.rs/nb/0.1.0/nb/enum.Error.html</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Some traits, like the one shown below, may expose possibly blocking APIs that can&#39;t fail. In</span>
-<span class="doccomment">//! those cases `nb::Result&lt;_, !&gt;` is used.</span>
+<span class="doccomment">//! those cases `nb::Result&lt;_, Void&gt;` is used.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! #![feature(never_type)]</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! extern crate nb;</span>
+<span class="doccomment">//! extern crate void;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! use void::Void;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! /// A count down timer</span>
 <span class="doccomment">//! pub trait CountDown {</span>
 <span class="doccomment">//!     // ..</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     /// &quot;waits&quot; until the count down is over</span>
-<span class="doccomment">//!     fn wait(&amp;mut self) -&gt; nb::Result&lt;(), !&gt;;</span>
+<span class="doccomment">//!     fn wait(&amp;mut self) -&gt; nb::Result&lt;(), Void&gt;;</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # fn main() {}</span>
@@ -1179,7 +1196,6 @@
 <span class="doccomment">//! fashion:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! # #![feature(never_type)]</span>
 <span class="doccomment">//! extern crate embedded_hal;</span>
 <span class="doccomment">//! #[macro_use(block)]</span>
 <span class="doccomment">//! extern crate nb;</span>
@@ -1201,9 +1217,11 @@
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # mod stm32f30x_hal {</span>
+<span class="doccomment">//! #     extern crate void;</span>
+<span class="doccomment">//! #     use self::void::Void;</span>
 <span class="doccomment">//! #     pub struct Serial1;</span>
 <span class="doccomment">//! #     impl Serial1 {</span>
-<span class="doccomment">//! #         pub fn write(&amp;mut self, _: u8) -&gt; ::nb::Result&lt;(), !&gt; {</span>
+<span class="doccomment">//! #         pub fn write(&amp;mut self, _: u8) -&gt; ::nb::Result&lt;(), Void&gt; {</span>
 <span class="doccomment">//! #             Ok(())</span>
 <span class="doccomment">//! #         }</span>
 <span class="doccomment">//! #     }</span>
@@ -1216,11 +1234,9 @@
 <span class="doccomment">//! second. Second task: loop back data over the serial interface.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! #![feature(conservative_impl_trait)]</span>
-<span class="doccomment">//! #![feature(never_type)]</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//! extern crate embedded_hal as hal;</span>
 <span class="doccomment">//! extern crate futures;</span>
+<span class="doccomment">//! extern crate void;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! #[macro_use(try_nb)]</span>
 <span class="doccomment">//! extern crate nb;</span>
@@ -1233,11 +1249,12 @@
 <span class="doccomment">//! };</span>
 <span class="doccomment">//! use futures::future::Loop;</span>
 <span class="doccomment">//! use stm32f30x_hal::{Led, Serial1, Timer6};</span>
+<span class="doccomment">//! use void::Void;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! /// `futures` version of `CountDown.wait`</span>
 <span class="doccomment">//! ///</span>
 <span class="doccomment">//! /// This returns a future that must be polled to completion</span>
-<span class="doccomment">//! fn wait&lt;T&gt;(mut timer: T) -&gt; impl Future&lt;Item = T, Error = !&gt;</span>
+<span class="doccomment">//! fn wait&lt;T&gt;(mut timer: T) -&gt; impl Future&lt;Item = T, Error = Void&gt;</span>
 <span class="doccomment">//! where</span>
 <span class="doccomment">//!     T: hal::timer::CountDown,</span>
 <span class="doccomment">//! {</span>
@@ -1319,30 +1336,32 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     // Event loop</span>
 <span class="doccomment">//!     loop {</span>
-<span class="doccomment">//!         blinky.poll().unwrap(); // NOTE(unwrap) E = !</span>
+<span class="doccomment">//!         blinky.poll().unwrap(); // NOTE(unwrap) E = Void</span>
 <span class="doccomment">//!         loopback.poll().unwrap();</span>
 <span class="doccomment">//! #       break;</span>
 <span class="doccomment">//!     }</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # mod stm32f30x_hal {</span>
+<span class="doccomment">//! #     extern crate void;</span>
+<span class="doccomment">//! #     use self::void::Void;</span>
 <span class="doccomment">//! #     pub struct Timer6;</span>
 <span class="doccomment">//! #     impl ::hal::timer::CountDown for Timer6 {</span>
 <span class="doccomment">//! #         type Time = ();</span>
 <span class="doccomment">//! #</span>
 <span class="doccomment">//! #         fn start&lt;T&gt;(&amp;mut self, _: T) where T: Into&lt;()&gt; {}</span>
-<span class="doccomment">//! #         fn wait(&amp;mut self) -&gt; ::nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #         fn wait(&amp;mut self) -&gt; ::nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
 <span class="doccomment">//! #     }</span>
 <span class="doccomment">//! #</span>
 <span class="doccomment">//! #     pub struct Serial1;</span>
 <span class="doccomment">//! #     impl ::hal::serial::Read&lt;u8&gt; for Serial1 {</span>
-<span class="doccomment">//! #         type Error = !;</span>
-<span class="doccomment">//! #         fn read(&amp;mut self) -&gt; ::nb::Result&lt;u8, !&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #         type Error = Void;</span>
+<span class="doccomment">//! #         fn read(&amp;mut self) -&gt; ::nb::Result&lt;u8, Void&gt; { Err(::nb::Error::WouldBlock) }</span>
 <span class="doccomment">//! #     }</span>
 <span class="doccomment">//! #     impl ::hal::serial::Write&lt;u8&gt; for Serial1 {</span>
-<span class="doccomment">//! #         type Error = !;</span>
-<span class="doccomment">//! #         fn flush(&amp;mut self) -&gt; ::nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
-<span class="doccomment">//! #         fn write(&amp;mut self, _: u8) -&gt; ::nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #         type Error = Void;</span>
+<span class="doccomment">//! #         fn flush(&amp;mut self) -&gt; ::nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #         fn write(&amp;mut self, _: u8) -&gt; ::nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
 <span class="doccomment">//! #     }</span>
 <span class="doccomment">//! #</span>
 <span class="doccomment">//! #     pub struct Led;</span>
@@ -1360,7 +1379,6 @@
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! #![feature(generator_trait)]</span>
 <span class="doccomment">//! #![feature(generators)]</span>
-<span class="doccomment">//! # #![feature(never_type)]</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! extern crate embedded_hal as hal;</span>
 <span class="doccomment">//!</span>
@@ -1393,7 +1411,7 @@
 <span class="doccomment">//!         loop {</span>
 <span class="doccomment">//!             // `await!` means &quot;suspend / yield here&quot; instead of &quot;block until</span>
 <span class="doccomment">//!             // completion&quot;</span>
-<span class="doccomment">//!             await!(timer.wait()).unwrap(); // NOTE(unwrap) E = !</span>
+<span class="doccomment">//!             await!(timer.wait()).unwrap(); // NOTE(unwrap) E = Void</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//!             state = !state;</span>
 <span class="doccomment">//!</span>
@@ -1414,21 +1432,23 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//!     // Event loop</span>
 <span class="doccomment">//!     loop {</span>
-<span class="doccomment">//!         blinky.resume();</span>
-<span class="doccomment">//!         loopback.resume();</span>
+<span class="doccomment">//!         unsafe { blinky.resume(); }</span>
+<span class="doccomment">//!         unsafe { loopback.resume(); }</span>
 <span class="doccomment">//!         # break;</span>
 <span class="doccomment">//!     }</span>
 <span class="doccomment">//! }</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # mod stm32f30x_hal {</span>
+<span class="doccomment">//! #   extern crate void;</span>
+<span class="doccomment">//! #   use self::void::Void;</span>
 <span class="doccomment">//! #   pub struct Serial1;</span>
 <span class="doccomment">//! #   impl Serial1 {</span>
-<span class="doccomment">//! #       pub fn read(&amp;mut self) -&gt; ::nb::Result&lt;u8, !&gt; { Err(::nb::Error::WouldBlock) }</span>
-<span class="doccomment">//! #       pub fn write(&amp;mut self, _: u8) -&gt; ::nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #       pub fn read(&amp;mut self) -&gt; ::nb::Result&lt;u8, Void&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #       pub fn write(&amp;mut self, _: u8) -&gt; ::nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
 <span class="doccomment">//! #   }</span>
 <span class="doccomment">//! #   pub struct Timer6;</span>
 <span class="doccomment">//! #   impl Timer6 {</span>
-<span class="doccomment">//! #       pub fn wait(&amp;mut self) -&gt; ::nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #       pub fn wait(&amp;mut self) -&gt; ::nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
 <span class="doccomment">//! #   }</span>
 <span class="doccomment">//! #   pub struct Led;</span>
 <span class="doccomment">//! #   impl Led {</span>
@@ -1567,15 +1587,16 @@
 <span class="doccomment">//! - Buffered serial interface with periodic flushing in interrupt handler</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! # #![feature(never_type)]</span>
 <span class="doccomment">//! extern crate embedded_hal as hal;</span>
 <span class="doccomment">//! extern crate nb;</span>
+<span class="doccomment">//! extern crate void;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! use hal::prelude::*;</span>
+<span class="doccomment">//! use void::Void;</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! fn flush&lt;S&gt;(serial: &amp;mut S, cb: &amp;mut CircularBuffer)</span>
 <span class="doccomment">//! where</span>
-<span class="doccomment">//!     S: hal::serial::Write&lt;u8, Error = !&gt;,</span>
+<span class="doccomment">//!     S: hal::serial::Write&lt;u8, Error = Void&gt;,</span>
 <span class="doccomment">//! {</span>
 <span class="doccomment">//!     loop {</span>
 <span class="doccomment">//!         if let Some(byte) = cb.peek() {</span>
@@ -1640,9 +1661,9 @@
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! # struct Serial1;</span>
 <span class="doccomment">//! # impl ::hal::serial::Write&lt;u8&gt; for Serial1 {</span>
-<span class="doccomment">//! #   type Error = !;</span>
-<span class="doccomment">//! #   fn write(&amp;mut self, _: u8) -&gt; nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
-<span class="doccomment">//! #   fn flush(&amp;mut self) -&gt; nb::Result&lt;(), !&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #   type Error = Void;</span>
+<span class="doccomment">//! #   fn write(&amp;mut self, _: u8) -&gt; nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
+<span class="doccomment">//! #   fn flush(&amp;mut self) -&gt; nb::Result&lt;(), Void&gt; { Err(::nb::Error::WouldBlock) }</span>
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! # struct CircularBuffer;</span>
 <span class="doccomment">//! # impl CircularBuffer {</span>
@@ -1656,20 +1677,24 @@
 
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">missing_docs</span>)]</span>
 <span class="attribute">#![<span class="ident">deny</span>(<span class="ident">warnings</span>)]</span>
-<span class="attribute">#![<span class="ident">feature</span>(<span class="ident">never_type</span>)]</span>
 <span class="attribute">#![<span class="ident">no_std</span>]</span>
 
 <span class="attribute">#[<span class="ident">macro_use</span>]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">nb</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">void</span>;
 
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">adc</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">blocking</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">digital</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">prelude</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">serial</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">spi</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">timer</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">watchdog</span>;
 
 <span class="doccomment">/// Input capture</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// *This trait is available if embedded-hal is built with the `&quot;unproven&quot;` feature.*</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
@@ -1677,8 +1702,6 @@
 <span class="doccomment">/// / events</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # #![feature(never_type)]</span>
-<span class="doccomment">///</span>
 <span class="doccomment">/// extern crate embedded_hal as hal;</span>
 <span class="doccomment">/// #[macro_use(block)]</span>
 <span class="doccomment">/// extern crate nb;</span>
@@ -1701,6 +1724,8 @@
 <span class="doccomment">///     println!(&quot;Period: {} ms&quot;, period);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # extern crate void;</span>
+<span class="doccomment">/// # use void::Void;</span>
 <span class="doccomment">/// # struct MilliSeconds(u32);</span>
 <span class="doccomment">/// # trait U32Ext { fn ms(self) -&gt; MilliSeconds; }</span>
 <span class="doccomment">/// # impl U32Ext for u32 { fn ms(self) -&gt; MilliSeconds { MilliSeconds(self) } }</span>
@@ -1709,9 +1734,9 @@
 <span class="doccomment">/// # impl hal::Capture for Capture1 {</span>
 <span class="doccomment">/// #     type Capture = u16;</span>
 <span class="doccomment">/// #     type Channel = Channel;</span>
-<span class="doccomment">/// #     type Error = !;</span>
+<span class="doccomment">/// #     type Error = Void;</span>
 <span class="doccomment">/// #     type Time = MilliSeconds;</span>
-<span class="doccomment">/// #     fn capture(&amp;mut self, _: Channel) -&gt; ::nb::Result&lt;u16, !&gt; { Ok(0) }</span>
+<span class="doccomment">/// #     fn capture(&amp;mut self, _: Channel) -&gt; ::nb::Result&lt;u16, Void&gt; { Ok(0) }</span>
 <span class="doccomment">/// #     fn disable(&amp;mut self, _: Channel) { unimplemented!() }</span>
 <span class="doccomment">/// #     fn enable(&amp;mut self, _: Channel) { unimplemented!() }</span>
 <span class="doccomment">/// #     fn get_resolution(&amp;self) -&gt; MilliSeconds { unimplemented!() }</span>
@@ -1765,6 +1790,8 @@
 }
 
 <span class="doccomment">/// Pulse Width Modulation</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// *This trait is available if embedded-hal is built with the `&quot;unproven&quot;` feature.*</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
@@ -1881,12 +1908,13 @@
 
 <span class="doccomment">/// Quadrature encoder interface</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// *This trait is available if embedded-hal is built with the `&quot;unproven&quot;` feature.*</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// You can use this interface to measure the speed of a motor</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # #![feature(never_type)]</span>
 <span class="doccomment">/// extern crate embedded_hal as hal;</span>
 <span class="doccomment">/// #[macro_use(block)]</span>
 <span class="doccomment">/// extern crate nb;</span>
@@ -1913,6 +1941,8 @@
 <span class="doccomment">///     println!(&quot;Speed: {} pulses per second&quot;, speed);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # extern crate void;</span>
+<span class="doccomment">/// # use void::Void;</span>
 <span class="doccomment">/// # struct Seconds(u32);</span>
 <span class="doccomment">/// # trait U32Ext { fn s(self) -&gt; Seconds; }</span>
 <span class="doccomment">/// # impl U32Ext for u32 { fn s(self) -&gt; Seconds { Seconds(self) } }</span>
@@ -1926,7 +1956,7 @@
 <span class="doccomment">/// # impl hal::timer::CountDown for Timer6 {</span>
 <span class="doccomment">/// #     type Time = Seconds;</span>
 <span class="doccomment">/// #     fn start&lt;T&gt;(&amp;mut self, _: T) where T: Into&lt;Seconds&gt; {}</span>
-<span class="doccomment">/// #     fn wait(&amp;mut self) -&gt; ::nb::Result&lt;(), !&gt; { Ok(()) }</span>
+<span class="doccomment">/// #     fn wait(&amp;mut self) -&gt; ::nb::Result&lt;(), Void&gt; { Ok(()) }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unproven&quot;</span>)]</span>
@@ -1944,6 +1974,8 @@
 }
 
 <span class="doccomment">/// Count direction</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// *This enumeration is available if embedded-hal is built with the `&quot;unproven&quot;` feature.*</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">Eq</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;unproven&quot;</span>)]</span>
 <span class="comment">// reason: part of the unproven `Qei` interface</span>
@@ -1953,5 +1985,5 @@
     <span class="doccomment">/// 1, 2, 3</span>
     <span class="ident">Upcounting</span>,
 }
-</pre>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "embedded_hal";</script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
+</pre></div>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g., <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g., <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g., <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "embedded_hal";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

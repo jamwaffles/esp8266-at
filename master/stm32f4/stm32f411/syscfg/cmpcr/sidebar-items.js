@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["CMP_PDR","Value of the field"],["R","Value read from the register"],["READYR","Value of the field"]]});
