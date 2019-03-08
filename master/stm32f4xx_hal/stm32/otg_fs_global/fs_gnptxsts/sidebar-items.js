@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["NPTQXSAVR","Value of the field"],["NPTXFSAVR","Value of the field"],["NPTXQTOPR","Value of the field"],["R","Value read from the register"]]});

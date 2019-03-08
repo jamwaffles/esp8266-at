@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["ADDMODER","Possible values of the field `ADDMODE`"],["ADDMODEW","Values that can be written to the field `ADDMODE`"]],"struct":[["ADDR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_ADDMODEW","Proxy"],["_ADDW","Proxy"]]});

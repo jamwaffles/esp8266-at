@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["FSLSPCSR","Value of the field"],["FSLSSR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_FSLSPCSW","Proxy"]]});

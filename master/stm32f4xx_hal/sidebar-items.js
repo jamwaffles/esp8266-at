@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["interrupt","Enumeration of all the interrupts"]],"macro":[["block","Turns the non-blocking expression `$e` into a blocking operation."]],"mod":[["delay","Delays"],["gpio","General Purpose Input / Output"],["i2c",""],["prelude",""],["rcc",""],["serial",""],["spi",""],["stm32",""],["time",""],["timer","Timers"]]});

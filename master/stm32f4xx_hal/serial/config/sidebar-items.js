@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["Parity",""],["StopBits",""],["WordLength",""]],"struct":[["Config",""],["InvalidConfig",""]]});

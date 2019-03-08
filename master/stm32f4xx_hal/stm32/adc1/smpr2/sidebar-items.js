@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["SMPX_XR","Possible values of the field `SMPx_x`"],["SMPX_XW","Values that can be written to the field `SMPx_x`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_SMPX_XW","Proxy"]]});

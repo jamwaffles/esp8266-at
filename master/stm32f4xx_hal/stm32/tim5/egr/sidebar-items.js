@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["UGW","Values that can be written to the field `UG`"]],"struct":[["W","Value to write to the register"],["_CC1GW","Proxy"],["_CC2GW","Proxy"],["_CC3GW","Proxy"],["_CC4GW","Proxy"],["_TGW","Proxy"],["_UGW","Proxy"]]});

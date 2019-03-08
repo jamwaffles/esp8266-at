@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["PWRDWNR","Value of the field"],["R","Value read from the register"],["SOFOUTENR","Value of the field"],["VBUSASENR","Value of the field"],["VBUSBSENR","Value of the field"],["W","Value to write to the register"],["_PWRDWNW","Proxy"],["_SOFOUTENW","Proxy"],["_VBUSASENW","Proxy"],["_VBUSBSENW","Proxy"]]});

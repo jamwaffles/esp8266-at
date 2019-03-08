@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["DADR","Value of the field"],["DSPDR","Value of the field"],["NZLSOHSKR","Value of the field"],["PFIVLR","Value of the field"],["R","Value read from the register"],["W","Value to write to the register"],["_DADW","Proxy"],["_DSPDW","Proxy"],["_NZLSOHSKW","Proxy"],["_PFIVLW","Proxy"]]});

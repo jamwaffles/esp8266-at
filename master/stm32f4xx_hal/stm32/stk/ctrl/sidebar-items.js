@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["CLKSOURCER","Value of the field"],["COUNTFLAGR","Value of the field"],["ENABLER","Value of the field"],["R","Value read from the register"],["TICKINTR","Value of the field"],["W","Value to write to the register"],["_CLKSOURCEW","Proxy"],["_COUNTFLAGW","Proxy"],["_ENABLEW","Proxy"],["_TICKINTW","Proxy"]]});

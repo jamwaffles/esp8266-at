@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["TIMPRER","Possible values of the field `TIMPRE`"],["TIMPREW","Values that can be written to the field `TIMPRE`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_TIMPREW","Proxy"]]});

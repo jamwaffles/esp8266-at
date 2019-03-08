@@ -1,1 +1,0 @@
-initSidebarItems({"enum":[["EWIFR","Possible values of the field `EWIF`"],["EWIFW","Values that can be written to the field `EWIF`"]],"struct":[["R","Value read from the register"],["W","Value to write to the register"],["_EWIFW","Proxy"]]});
